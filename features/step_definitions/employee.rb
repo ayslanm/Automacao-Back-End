@@ -1,9 +1,9 @@
 Dado('que o usuario consulte informacoes de funcionario') do
-@get_url = 'https://reqres.in/api/users?page=2'
+    @getlist = Employee_Requests.new
 end
   
 Quando('ele realizar a pesquisa') do
-    @list_employee = HTTParty.get(@get_url)
+    @list_employee = getlist.find_employee
 end
   
 Entao('uma lista de funcionarios deve retornar') do
@@ -54,10 +54,23 @@ end
   
 Entao('as informacoes serao alteradas') do
     expect(@update_employee.code).to eql (200)
-    expect(update_employee.msg).to eql 'OK'
-    expect(update_employee["status"]).to eql 'success'
-    expect(update_employee["status"]). to eql 'Successfully! Record has been updated'
-    expect(update_employee['data']["employee_name"]).to eql 'Alberto'
-    expect(update_employee['data']["employee_salary"]).to eql (100)
-    expect(update_employee['data']["employee_age"]).to eql (40)
+    expect(@update_employee.msg).to eql 'OK'
+    expect(@update_employee["status"]).to eql 'success'
+    expect(@update_employee["status"]). to eql 'Successfully! Record has been updated'
+    expect(@update_employee['data']["employee_name"]).to eql 'Alberto'
+    expect(@update_employee['data']["employee_salary"]).to eql (100)
+    expect(@update_employee['data']["employee_age"]).to eql (40)
+end
+
+Dado('que o usuario queira deletar um funcionario') do
+    @delete_url = 'https://reqres.in/api/users/2'
+end
+  
+Quando('ele enviar a identificacao unica') do
+    @delete_employee = HTTParty.delete(@delete_url, :headers => {'Content-Type': 'application/json'})
+    puts @delete_employee
+end
+  
+Entao('esse funcionario sera deletado do sistema') do
+    expect(@delete_employee.code).to eql (204)
 end
